@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import norm
+from optimisation import newton_raphson
 
 """
 Main parts (interlinked):
@@ -103,7 +104,50 @@ class BlackScholes:
 
             
             
-            
+def implied_volatility(S0: float, r: float, K: float, T: float, market_price: float, 
+                       tol: float = 1e-5, type: str = "call", return_list: bool = False) -> float | list[float]:
+    """
+    This is basically a root-finding problem, we model the underlying and 
+    come up with a price for some derivative as a function of volatility
+    sigma. We want to find the volatility which gives the market price i.e.
+    C_model(sigma) = C_market i.e. f(sigma) = C_model(sigma) - C_market. We
+    can use Newton-Raphson method. Note: We need C(S0, r, sigma, K, T) and 
+    the delta. So we fix S0, r, K and T. 
+
+    Arguments:
+    ----------
+    S0 : float
+        Initial price of underlying.
+    r : float
+        Risk-free interest rate.
+    K : float
+        Strike price.
+    T : float
+        Maturity date.
+    market_price: float
+        Market price of option quoted from market.
+    tol : float
+        Tolerance level.
+    type : str
+        Type of option "call" or "put".
+
+
+    Returns: 
+    --------
+    float or List[float]
+        The implied volatility.
+    """
+
+    # Some bug somewhere: maybe implementation of Black-Scholes class
+
+    max_iter = 200
+    initial_sigma = 0.30
+    
+    black_scholes_price = lambda vol : BlackScholes(S0, K, T, r, vol, type=type).price - market_price
+    black_scholes_delta = lambda vol : BlackScholes(S0, K, T, r, vol, type=type).delta
+    
+    return newton_raphson(black_scholes_price, black_scholes_delta, initial_sigma,
+                          tol=tol, max_iter=max_iter, return_list=return_list)
 
 
             

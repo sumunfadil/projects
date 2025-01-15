@@ -2,7 +2,7 @@ from typing import Callable
 
 
 def newton_raphson(f: Callable, f_prime: Callable, x0: float, tol: float, 
-                   max_iter: int, return_list: bool = False) -> float:
+                   max_iter: int, return_list: bool = False) -> float | list[float]:
     """
     This is a well-known root-finding algorithm of the 
     equation f(x) = 0, for some function f
@@ -22,7 +22,7 @@ def newton_raphson(f: Callable, f_prime: Callable, x0: float, tol: float,
 
     Returns: 
     --------
-    float
+    float or List[float]
         An approximation of the root.
     """
 
